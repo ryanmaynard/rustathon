@@ -1,66 +1,67 @@
-use axum::{extract::{Path, Query}, Extension, Json, Router, routing::{get, post, put, delete}};
+use axum::{
+    extract::{Path, Query},
+    Json, Router,
+    routing::{get, post, put, delete}
+};
 use serde::{Deserialize, Serialize};
 use uuid::Uuid;
+use std::sync::Arc;
+use tokio::sync::Mutex;
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 struct Project {
     id: Uuid,
     name: String,
     description: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-struct Task {
-    id: Uuid,
-    name: String,
-    description: String,
-    project_id: Uuid,
+type Database = Arc<Mutex<Vec<Project>>>;
+
+async fn list_projects(db: Database) -> Json<Vec<Project>> {
+    let db = db.lock().await;
+    Json(db.clone())
 }
 
-async fn list_projects() -> Json<Vec<Project>> {
-    // TODO: Implement list projects
-    unimplemented!()
+async fn create_project(db: Database, Json(new_project): Json<Project>) -> Json<Project> {
+    let mut db = db.lock().await;
+    let project = Project {
+        id: Uuid::new_v4(),
+        ..new_project
+    };
+    db.push(project.clone());
+    Json(project)
 }
 
-async fn create_project(Json(project): Json<Project>) -> Json<Project> {
-    // TODO: Implement create project
-    unimplemented!()
+async fn get_project(db: Database, Path(project_id): Path<Uuid>) -> Option<Json<Project>> {
+    let db = db.lock().await;
+    db.iter().find(|project| project.id == project_id).cloned().map(Json)
 }
 
-async fn update_project(Path(id): Path<Uuid>, Json(project): Json<Project>) -> Json<Project> {
-    // TODO: Implement update project
-    unimplemented!()
+async fn update_project(db: Database, Path(project_id): Path<Uuid>, Json(updated_project): Json<Project>) -> Option<Json<Project>> {
+    let mut db = db.lock().await;
+    if let Some(project) = db.iter_mut().find(|project| project.id == project_id) {
+        project.name = updated_project.name.clone();
+        project.description = updated_project.description.clone();
+        Some(Json(project.clone()))
+    } else {
+        None
+    }
 }
 
-async fn delete_project(Path(id): Path<Uuid>) -> Json<()> {
-    // TODO: Implement delete project
-    unimplemented!()
-}
-
-async fn list_tasks(Query(params): Query<Uuid>) -> Json<Vec<Task>> {
-    // TODO: Implement list tasks
-    unimplemented!()
-}
-
-async fn create_task(Json(task): Json<Task>) -> Json<Task> {
-    // TODO: Implement create task
-    unimplemented!()
-}
-
-async fn update_task(Path(id): Path<Uuid>, Json(task): Json<Task>) -> Json<Task> {
-    // TODO: Implement update task
-    unimplemented!()
-}
-
-async fn delete_task(Path(id): Path<Uuid>) -> Json<()> {
-    // TODO: Implement delete task
-    unimplemented!()
+async fn delete_project(db: Database, Path(project_id): Path<Uuid>) -> Option<Json<()>> {
+    let mut db = db.lock().await;
+    if db.iter().any(|project| project.id == project_id) {
+        db.retain(|project| project.id != project_id);
+        Some(Json(()))
+    } else {
+        None
+    }
 }
 
 pub fn create_project_routes() -> Router {
+    let db: Database = Arc::new(Mutex::new(vec![]));
     Router::new()
         .route("/projects", get(list_projects).post(create_project))
-        .route("/projects/:id", put(update_project).delete(delete_project))
-        .route("/tasks", get(list_tasks).post(create_task))
-        .route("/tasks/:id", put(update_task).delete(delete_task))
+        .route("/projects/:id", get(get_project).put(update_project).delete(delete_project))
+        .layer(axum::AddExtensionLayer::new(db))
 }

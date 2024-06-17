@@ -1,11 +1,10 @@
 [package]
-name = "hackathon-starter-app"
+name = "rustathon"
 version = "0.1.0"
 edition = "2018"
 
 [dependencies]
 axum = "0.4"
-tower-http = { version = "0.1", features = ["serve"] }
 tokio = { version = "1", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
@@ -21,3 +20,5 @@ bcrypt = "0.11"
 stripe = "0.17"
 twilio = "0.1.0"
 openai = "0.1.0" # Hypothetical crate, please check actual availability
+tower = "0.4"
+tower-http = { version = "0.1", features = ["serve"] }

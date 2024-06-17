@@ -1,52 +1,57 @@
-# Hackathon Starter App
+# Rustathon
 
-This project is a hackathon starter app built with Rust using the Axum framework. It provides a ready-to-deploy solution with authentication, database integration, real-time communication, and several other features to kickstart your hackathon project.
+Rustathon is a hackathon starter app built with Rust and Axum. It includes JWT authentication, PostgreSQL integration, WebSockets, and more.
 
 ## Features
 
-- **JWT Authentication** and Google OAuth
-- **PostgreSQL** for persistent storage
-- **RESTful API** with CRUD operations
-- **WebSockets** for real-time notifications
-- **Bootstrap** for frontend
-- **File Upload** support
-- **Role-Based Access Control** (RBAC)
-- **Rate Limiting** on API endpoints
-- **Deployment** to Digital Ocean's App Center
-- Integrations with **Stripe**, **Twilio**, and **OpenAI's ChatGPT**
+- **Authentication**: JWT and Google OAuth 2.0
+- **Database**: PostgreSQL integration using Diesel
+- **WebSockets**: Real-time updates with WebSockets
+- **File Uploads**: Support for file uploads
+- **Rate Limiting**: Rate limiting on API endpoints
+- **APIs**: Stripe, Twilio, OpenAI's ChatGPT
+- **Frontend**: Bootstrap for styling
 
-## Project Structure
+## Getting Started
 
-```plaintext
-hackathon-starter-app/
-├── src/
-│   ├── auth.rs
-│   ├── config.rs
-│   ├── db.rs
-│   ├── errors.rs
-│   ├── main.rs
-│   ├── middleware.rs
-│   ├── models.rs
-│   ├── routes/
-│   │   ├── mod.rs
-│   │   ├── projects.rs
-│   │   ├── tasks.rs
-│   └── ws.rs
-├── templates/
-│   ├── login.html
-│   ├── register.html
-│   └── index.html
-├── static/
-│   ├── css/
-│   │   └── bootstrap.min.css
-│   └── js/
-│       └── bootstrap.min.js
-├── migrations/
-│   ├── 20220101010101_create_users_table.sql
-│   ├── 20220101010201_create_projects_table.sql
-│   ├── 20220101010301_create_tasks_table.sql
-├── Cargo.toml
-├── .env
-├── Dockerfile (optional for local development)
-├── README.md
-└── .gitignore
+### Prerequisites
+
+- Rust and Cargo installed
+- PostgreSQL database
+- Docker (optional, for containerization)
+
+### Installation
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/yourusername/rustathon.git
+   cd rustathon
+   ```
+
+2. Set up the environment variables
+    ```sh
+    cp .env.example .env
+    # Edit the .env file to set your environment variables
+    ```
+
+3. Set up the database
+    ```sh
+    diesel setup
+    diesel migration run
+    ```
+
+4. Run the application
+    ```sh
+    cargo run
+    ```
+### Building with Docker
+
+1. Build the Docker image
+    ```sh
+    docker build -t rustathon .
+
+2. Run the Docker container
+    ```sh
+    docker run -p 3000:3000 --env-file .env rustathon
+
+

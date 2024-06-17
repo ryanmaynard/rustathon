@@ -30,8 +30,8 @@ async fn main() {
         .merge(create_project_routes())
         .merge(create_task_routes())
         .merge(create_ws_routes())
-        .nest("/static", get_service(ServeDir::new("static")))
-        .route("/", get(|| async { "Welcome to the Hackathon Starter App!" }));
+        .nest("/static", tower_http::services::ServeDir::new("static"))
+        .route("/", get(|| async { "Welcome to Rustathon!" }));
 
     let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
     println!("Listening on {}", addr);

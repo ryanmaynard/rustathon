@@ -1,0 +1,6 @@
+[print_schema]
+file = "src/schema.rs"
+
+[dependencies]
+diesel = { version = "1.4", features = ["postgres"] }
+dotenv = "0.15"
