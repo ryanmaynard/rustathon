@@ -29,10 +29,12 @@ Rustathon is a hackathon starter app built with Rust and Axum. It includes JWT a
    ```
 
 2. Set up the environment variables
-    ```sh
-    cp .env.example .env
-    # Edit the .env file to set your environment variables
-    ```
+	```sh
+	cp .env.example .env
+  	```
+  	Edit the .env file to set your environment variables
+  	
+    
 
 3. Set up the database
     ```sh
@@ -44,14 +46,17 @@ Rustathon is a hackathon starter app built with Rust and Axum. It includes JWT a
     ```sh
     cargo run
     ```
+    
 ### Building with Docker
 
 1. Build the Docker image
     ```sh
-    docker build -t rustathon .
+    docker build -t rustathon
+    ```
 
 2. Run the Docker container
     ```sh
     docker run -p 3000:3000 --env-file .env rustathon
+    ```
 
 
